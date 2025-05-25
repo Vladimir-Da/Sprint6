@@ -11,9 +11,9 @@ func main() {
 
 	logger := log.New(os.Stdout, "", log.LstdFlags)
 
-	srv := server.NewServer(logger)
-
-	if err := srv.HttpServer.ListenAndServe(); err != nil {
-		logger.Fatal("Server start error ", err)
+	MyServer := server.NewServer(logger)
+	if err := MyServer.Start(); err != nil {
+		logger.Fatalf("Server Fatal Error: %v", err)
 	}
+
 }

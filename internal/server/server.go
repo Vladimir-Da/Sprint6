@@ -13,24 +13,24 @@ type Server struct {
 	HttpServer *http.Server
 }
 
-func NewServer(log *log.Logger) *Server {
-	//r := chi.NewRouter()
-	//r.Get("/", handlers.IndexHandler)
-	//r.Post("/upload", handlers.MainHandler)
+func NewServer(Logger *log.Logger) *Server {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/upload", handlers.MainHandler)
 	mux.HandleFunc("/", handlers.IndexHandler)
-	if err := http.ListenAndServe(":8080", mux); err != nil {
-		panic(err)
-	}
+	mux.HandleFunc("/upload", handlers.MainHandler)
 
-	httpServer := &http.Server{
-		Addr:         ":8080",
-		Handler:      mux,
-		ErrorLog:     log,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  15 * time.Second,
+	return &Server{
+		Log: Logger,
+		HttpServer: &http.Server{
+			Addr:         ":8080",
+			Handler:      mux,
+			ErrorLog:     Logger,
+			ReadTimeout:  5 * time.Second,
+			WriteTimeout: 10 * time.Second,
+			IdleTimeout:  15 * time.Second,
+		},
 	}
-	return &Server{Log: log, HttpServer: httpServer}
+}
+
+func (s *Server) Start() error {
+	return s.HttpServer.ListenAndServe()
 }
