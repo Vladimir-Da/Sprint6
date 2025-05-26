@@ -21,7 +21,11 @@ func IndexHandler(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(http.StatusOK)
 	// записываем html данные в тело ответа
-	w.Write(dataHtml)
+	_, err = w.Write(dataHtml)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 func MainHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -65,7 +69,13 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	// добавлена кодировка
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(translated))
+	// вывод результата
+	_, err = w.Write([]byte(translated))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
